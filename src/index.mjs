@@ -2,6 +2,8 @@ import express, { request, response } from 'express';
 
 const app = express();
 
+app.use(express.json())
+
 //use the envPORT or 3000 port
 const PORT = process.env.PORT || 3000;
 
@@ -22,13 +24,24 @@ app.get("/", (request, response) => {
 //request
 app.get('/api/users', (request, response) => {
     console.log(request.query);
-    const { query: {filter, value},
-    } = request;
+    const { query: {filter, value},} = request;
     if (filter && value) return response.send(
         mockUsers.filter((user) => user[filter].includes(value))
     );
     return response.send(mockUsers);
 });  
+
+
+//POST
+app.post('/api/users', (request, response) => {
+    console.log(request.body)
+    const { body } = request;
+    const newUser = { id: mockUsers[mockUsers.length -1].id + 1, ...body};
+    mockUsers.push(newUser);
+    return response.status(201).send(newUser);
+})
+
+
 
 
 app.get('/api/users/:id', (request, response) => {
@@ -45,10 +58,6 @@ app.get('/api/users/:id', (request, response) => {
 app.get('/api/products', (request, response) => {
     response.send([{id: 23, productName: "Mouse", prize: 33}]);
 });
-
-
-
-
 
 
 app.get('/api/test', (request, response) => {
