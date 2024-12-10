@@ -42,8 +42,6 @@ app.post('/api/users', (request, response) => {
 })
 
 
-
-
 app.get('/api/users/:id', (request, response) => {
     console.log(request.params); 
     const parsedId = parseInt(request.params.id);
