@@ -8,7 +8,12 @@ const PORT = process.env.PORT || 3000;
 const mockUsers = [
     { id:1, username: "Ema", displayName: "Ema322"},
     { id:2, username: "Carlos", displayName: "Carlos2"},
-    { id:3, username: "Carmen", displayName: "Carmencha"}];
+    { id:3, username: "Carmen", displayName: "Carmencha"},
+    { id:4, username: "Antonio", displayName: "Tono"},
+    { id:5, username: "Zara", displayName: "Zarita"},
+    { id:6, username: "Bernardo", displayName: "Beni"},
+    { id:7, username: "Emani", displayName: "Emita"},
+];
 
 app.get("/", (request, response) => {
     response.status(201).send({ msg: "Hello"});
@@ -16,12 +21,18 @@ app.get("/", (request, response) => {
 
 //request
 app.get('/api/users', (request, response) => {
-    response.send(mockUsers);
-});
+    console.log(request.query);
+    const { query: {filter, value},
+    } = request;
+    if (filter && value) return response.send(
+        mockUsers.filter((user) => user[filter].includes(value))
+    );
+    return response.send(mockUsers);
+});  
 
 
 app.get('/api/users/:id', (request, response) => {
-    console.log(request.params);
+    console.log(request.params); 
     const parsedId = parseInt(request.params.id);
     console.log(parsedId);
     if (isNaN(parsedId)) 
@@ -33,7 +44,12 @@ app.get('/api/users/:id', (request, response) => {
 
 app.get('/api/products', (request, response) => {
     response.send([{id: 23, productName: "Mouse", prize: 33}]);
-})
+});
+
+
+
+
+
 
 app.get('/api/test', (request, response) => {
 
