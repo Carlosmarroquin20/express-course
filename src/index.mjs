@@ -1,4 +1,5 @@
 import express, { request, response } from "express";
+import { query, validationResult, body } from "express-validator";
 
 const app = express();
 
@@ -27,8 +28,17 @@ app.get("/", (request, response) => {
 });
 
 //request
-app.get("/api/users", (request, response) => {
-  console.log(request.query);
+app.get(
+    "/api/users", 
+    query('filter')
+    .isString()
+    .notEmpty()
+    .withMessage("Must not be empty")
+    .isLength({ min: 3, max: 10})
+    .withMessage('Must be al least 3-10 characters'),
+    (request, response) => {
+        const result = validationResult(request);
+        console.log(result);
   const {
     query: { filter, value },
   } = request;
