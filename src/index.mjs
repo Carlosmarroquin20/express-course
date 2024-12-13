@@ -1,4 +1,4 @@
-import express, { request, response } from 'express';
+import express from 'express';
 
 const app = express();
 
@@ -31,7 +31,6 @@ app.get('/api/users', (request, response) => {
     return response.send(mockUsers);
 });  
 
-
 //POST
 app.post('/api/users', (request, response) => {
     console.log(request.body)
@@ -40,7 +39,6 @@ app.post('/api/users', (request, response) => {
     mockUsers.push(newUser);
     return response.status(201).send(newUser);
 })
-
 
 app.get('/api/users/:id', (request, response) => {
     console.log(request.params); 
@@ -59,7 +57,6 @@ app.get('/api/products', (request, response) => {
 
 
 app.get('/api/test', (request, response) => {
-
 });
 
 //put method
@@ -73,8 +70,6 @@ app.put('/api/users/:id', (request, response) => {
     return response.sendStatus(200);
 });
 
-
-
 //patch method
 app.patch('/api/users/:id', (request, response) => {
     const { body, params: {id}} = request;
@@ -85,6 +80,20 @@ app.patch('/api/users/:id', (request, response) => {
     mockUsers[findUserIndex] = { ...mockUsers[findUserIndex], ...body};
     return response.sendStatus(200);
 });
+
+//delete
+app.delete('/api/users/:id', (request, response) => {
+  const {
+     params: { id },  
+    } = request;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return response.sendStatus(400);
+    const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+    if (findUserIndex === -1) return response.sendStatus(404);
+    mockUsers.splice(findUserIndex, 1);
+    return response.sendStatus(200);
+});
+
 
 
 app.listen(PORT, () => {
