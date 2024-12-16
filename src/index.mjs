@@ -70,7 +70,7 @@ const resolvewIndexByUserId = (request, response, next) => {
 };
 
 //POST
-app.post("/api/users", (request, response) => {
+app.post("/api/users",body(), (request, response) => {
   console.log(request.body);
   const { body } = request;
   const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
