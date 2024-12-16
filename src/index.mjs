@@ -1,5 +1,5 @@
 import express, { request, response } from "express";
-import { query, validationResult, body } from "express-validator";
+import { query, validationResult, body, matchedData } from "express-validator";
 
 const app = express();
 
@@ -69,11 +69,24 @@ const resolvewIndexByUserId = (request, response, next) => {
       next();
 };
 
-//POST
-app.post("/api/users",body(), (request, response) => {
-  console.log(request.body);
-  const { body } = request;
-  const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
+//POST and VALIDATIONS
+app.post("/api/users",
+  [body('username')
+    .notEmpty()
+    .withMessage("Username can't be empty")
+    .isLength({ min: 5, max: 32})
+    .withMessage("Username must be at least 5 characters with a max of 32 characters")
+    .isString()
+    .withMessage("Username must be a string!"),
+    body("displayName").notEmpty()],
+
+   (request, response) => { const result = validationResult(request);
+    console.log(result);
+    if (!result.isEmpty())
+      return response.status(400).send({ errors: result.array() });
+    
+  const data = matchedData(request);
+  const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...data };
   mockUsers.push(newUser);
   return response.status(201).send(newUser);
 });
